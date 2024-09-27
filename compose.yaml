@@ -1,1 +1,17 @@
 services:
+  pyspark:
+    image: jupyter/pyspark-notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+
+  superset:
+    image: apache/superset
+    ports:
+      - "8008:8008"
+    environment:
+      - SUPERSET_DATABASE_URI=sqlite:////superset/superset.db
+    volumes:
+      - ./superset:/superset
+      - ./superset_config.py:/app/superset_config.py
