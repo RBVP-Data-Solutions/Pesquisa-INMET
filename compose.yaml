@@ -9,7 +9,7 @@ services:
   superset:
     image: apache/superset
     ports:
-      - "8008:8008"
+      - "8008:8088"
     environment:
       - SUPERSET_DATABASE_URI=sqlite:////superset/superset.db
     volumes:
