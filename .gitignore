@@ -1,2 +1,3 @@
 airflow/logs
+airflow/.env
 superset_config.py
