@@ -12,7 +12,7 @@ sudo chmod 755 logs;
 sudo chmod 755 plugins;
 sudo chmod 755 scripts;
 sudo chmod 755 datasets;
-sudo docker compose up;
+sudo docker compose up -d;
 cd ..
 
 #KAFKA
@@ -21,10 +21,10 @@ sudo mkdir kafka;
 cd kafka;
 sudo git clone https://github.com/confluentinc/cp-all-in-one;
 cd cp-all-in-one/cp-all-in-one/;
-sudo docker compose up;
+sudo docker compose up -d;
 cd ..
 cd ..
 cd ..
 
 # PYSPARK & SUPERSET
-sudo docker compose up;
+sudo docker compose up -d;
