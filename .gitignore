@@ -1,2 +1,4 @@
 airflow/logs
+airflow/.env
 superset_config.py
+code/cadeia_conexao.txt
