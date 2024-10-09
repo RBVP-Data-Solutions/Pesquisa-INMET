@@ -3,7 +3,6 @@ from kafka import KafkaProducer
 import requests, zipfile, io
 import json
 
-
 # VARIÁVEIS DE APOIO
 cadeia_conexao = str(open('cadeia_conexao.txt', 'r'))
 nome_container = 'bdmep'
@@ -12,16 +11,20 @@ nome_container = 'bdmep'
 blob_service_client = BlobServiceClient.from_connection_string(cadeia_conexao)
 container_client = blob_service_client.get_container_client(nome_container)
 
-producer = KafkaProducer(bootstrap_servers='localhost:9092')
+# CONEXÃO COM KAFKA
+producer = KafkaProducer(bootstrap_servers='localhost:9092',
+                        value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
-response = requests.get('')
-data = response.json()
+# EXTRAÇÃO DOS DADOS DO BDMEP(BANCO DE DADOS METEREOLOGICOS)
+response = requests.get('https://bdmep.inmet.gov.br/$2a$10$mwzyjeScvWM7EvtZ3Z1ZDezZWIZTzRcbdMNULILAmfFQeNQD07LXe.zip')
 
-"""
-r = requests.get('https://bdmep.inmet.gov.br/$2a$10$mwzyjeScvWM7EvtZ3Z1ZDezZWIZTzRcbdMNULILAmfFQeNQD07LXe.zip')
-z = zipfile.ZipFile(io.BytesIO(r.content))
-z.extractall("/home/rodrigo/Dev")
-"""
+# ENVIANDO OS DADOS PARA O KAFKA CONSUMER
+if response.status_code == 200:
+    data = response.json()
+    producer.send('dados-bdmep', data)
+    producer.flush()
+    print("Dados enviados para o Kafka.")
+else:
+    print("Erro ao acessar a API:", response.status_code)
 
-producer.send('dados-bdmep', json.dumps(data).encode('utf-8'))
 producer.close()
